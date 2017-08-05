@@ -8,7 +8,23 @@ public class SpaceShipController : MonoBehaviour {
 
 	Vector2 delta = Vector2.zero;
 
-	void Update () {
+	Rigidbody2D _rigidBody2D;
+	Vector2 _force = Vector2.zero;
+	float _torque;
+	public float thrustMultiplyer;
+	public float SteerMultiplyer;
+
+
+	void Awake(){
+	
+		_rigidBody2D = GetComponent<Rigidbody2D>();
+
+	}
+
+
+
+
+	void FixedUpdate () {
 
 
 
@@ -29,8 +45,21 @@ public class SpaceShipController : MonoBehaviour {
 		delta.y = Input.GetAxis("Vertical");
 
 		#endif
-		transform.Translate(0, delta.y, 0) ;
-		transform.Rotate(0,0,-delta.x) ;
+	
+
+
+		_force.y = delta.y * thrustMultiplyer;
+		_torque = -delta.x * SteerMultiplyer;
+
+
+
+		_rigidBody2D.AddRelativeForce(_force);
+		_rigidBody2D.AddTorque(_torque);
+
+
+		//	transform.Translate(0, delta.y, 0) ;
+	
+		//	transform.Rotate(0,0,-delta.x) ;
 		//transformComponent.Translate(0.01f, 0, 00);	
 	}
 }

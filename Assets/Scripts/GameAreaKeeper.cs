@@ -8,8 +8,8 @@ using UnityEngine;
  */
 
 
-[AddComponentMenu("Farhan/ScreenLooper")]
-public class TransformLooper : MonoBehaviour {
+[AddComponentMenu("Farhan/GameAreaKeeper")]
+public class GameAreaKeeper : MonoBehaviour {
 
 
 
@@ -19,7 +19,7 @@ public class TransformLooper : MonoBehaviour {
 
 
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		//position = transform.position;
 
 		areaSpacePosition = gameArea.transform.InverseTransformPoint(transform.position);

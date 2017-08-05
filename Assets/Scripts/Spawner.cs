@@ -12,7 +12,6 @@ public class Spawner : MonoBehaviour {
 	[Range(0.001f,100)]	public float minRate = 1.0f;
 	[Range(0.001f,100)]	public float maxRate = 1.0f;
 
-	//	float _timeStamp;	
 	public int number = 5;
 	public	bool infinite;
 	int _remaining;
@@ -21,25 +20,34 @@ public class Spawner : MonoBehaviour {
 	[Header("Locations")]
 
 	public GameArea area;
+	Transform player;
+	public float minDistanceFromPlayer;
 
 
-	void Start(){
-		//_timeStamp = Time.time;
+	IEnumerator Start(){
 		_remaining = number;
-		StartCoroutine(Spawn());
-	}
 
+		if (minDistanceFromPlayer > 0)
+		{
+			GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
+			if (playerGO)
+				player = playerGO.transform;
+			else
+				Debug.LogWarning("No Player Found, Please assign player tag to player object! ");
+		}
 
-
-
-	IEnumerator Spawn(){
-	
 		while (infinite || _remaining > 0)
 		{
-
-
 			Vector3 _position = area ? area.GetRandomPosition() : transform.position;
 
+			if(player && Vector3.Distance(_position,player.position) < minDistanceFromPlayer)
+			{
+				Debug.Log(_position);
+				Vector2 debugPos = _position;
+				Debug.DrawLine(transform.position, debugPos);
+				_position = (_position - player.position).normalized * minDistanceFromPlayer;
+				Debug.DrawLine(debugPos, _position);
+			}
 			Instantiate(refrence, _position, transform.rotation);
 			_remaining--;
 			yield return new WaitForSeconds(1 / Random.Range(minRate,maxRate));
@@ -47,20 +55,5 @@ public class Spawner : MonoBehaviour {
 	}
 
 
-	/*
-	void Update(){
-		if (Time.time <= _timeStamp + rate)
-			return;
-		_timeStamp = Time.time;
 
-
-		if (_remaining > 0)
-		{
-			Instantiate(refrence, transform.position, transform.rotation);
-			_remaining --;
-			if ((_remaining <= 0))
-				enabled = false;
-		}
-	}
-	*/
 }
