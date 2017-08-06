@@ -18,6 +18,29 @@ public class GameArea : MonoBehaviour {
 	[HideInInspector]
 	Rect _area;
 
+
+
+	static GameArea _main;
+	static public GameArea Main
+	{
+		get{ 
+			if (_main == null)
+			{
+				_main = GameObject.FindObjectOfType<GameArea>();
+				if (_main == null)
+				{
+					GameObject go = new GameObject("Game Area: Main");
+					_main = go.AddComponent<GameArea>();
+					go.AddComponent<FitAreaToCamera>();
+				}
+			}
+			return _main;
+		}
+		set{
+			_main = value;
+		}
+	}
+
 	public Rect Area{
 		get{ return _area;}
 		set{ _area = value;}

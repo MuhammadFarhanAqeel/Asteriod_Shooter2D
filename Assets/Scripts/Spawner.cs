@@ -70,12 +70,15 @@ public class Spawner : MonoBehaviour {
 
 			if(player && Vector3.Distance(_position,player.position) < minDistanceFromPlayer)
 			{
-				Debug.Log(_position);
+//				Debug.Log(_position);
 				Vector2 debugPos = _position;
 				Debug.DrawLine(transform.position, debugPos);
 				_position = (_position - player.position).normalized * minDistanceFromPlayer;
 				Debug.DrawLine(debugPos, _position);
 			}
+
+
+			// TODO : objet pooling! 
 			GameObject obj = (GameObject)Instantiate(refrence, _position, transform.rotation);
 			Rigidbody2D rb2d = obj.GetComponent<Rigidbody2D>();
 			if (rb2d)

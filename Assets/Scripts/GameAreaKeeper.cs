@@ -18,7 +18,16 @@ public class GameAreaKeeper : MonoBehaviour {
 	Vector3 areaSpacePosition;
 
 
-	// Update is called once per frame
+
+	void Start(){
+
+		if (!gameArea)
+			gameArea = GameArea.Main;
+	
+	
+	}
+
+
 	void FixedUpdate () {
 		//position = transform.position;
 

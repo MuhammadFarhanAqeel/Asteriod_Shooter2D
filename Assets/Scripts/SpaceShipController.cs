@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿//#define REMOTE
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,19 +16,37 @@ public class SpaceShipController : MonoBehaviour {
 	public float thrustMultiplyer;
 	public float SteerMultiplyer;
 
+	 Weapon _weapon;
+
+
+	bool _firing;
+	public bool Firing
+	{
+		get
+		{ return _firing; }
+		set
+		{ 
+			if (_firing != value)
+			{
+				_firing = value;
+
+				if (_firing)
+					_weapon.InvokeRepeating("Fire", 0.1f, 1/_weapon.firingRate);
+				else
+					_weapon.CancelInvoke();
+			}
+		}
+	}
+
 
 	void Awake(){
-	
 		_rigidBody2D = GetComponent<Rigidbody2D>();
-
+		_weapon = GetComponentInChildren<Weapon>();
 	}
 
 
 
-
 	void FixedUpdate () {
-
-
 
 		#if(UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR || REMOTE
 
@@ -37,12 +57,21 @@ public class SpaceShipController : MonoBehaviour {
 				delta.x = t.deltaPosition.x;
 				delta.y = t.deltaPosition.y;
 			}
+			if(t.tapCount > 1){
+				Firing = true;
+			}
+		}else{
+			Firing = false;	
 		}
+
 
 		#else
 
 		delta.x = Input.GetAxis("Horizontal");
 		delta.y = Input.GetAxis("Vertical");
+
+		Firing = Input.GetButton("Fire2");
+
 
 		#endif
 	
