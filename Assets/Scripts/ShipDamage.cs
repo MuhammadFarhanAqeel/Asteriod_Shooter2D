@@ -29,7 +29,7 @@ public class ShipDamage : MonoBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D collision){
-		float damage = collision.relativeVelocity.magnitude;
+		float damage = collision.relativeVelocity.magnitude * vulnerability	;
 		//if (collision.gameObject.tag == "Asteroid")
 		if (collision.collider.sharedMaterial)
 		{
