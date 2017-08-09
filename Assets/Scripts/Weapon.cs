@@ -5,6 +5,7 @@ using UnityEngine;
 public class Weapon : MonoBehaviour {
 
 	public GameObject projectile;
+	int _projectileID;
 
 	public Transform[] emitters;
 	int _current;
@@ -16,14 +17,13 @@ public class Weapon : MonoBehaviour {
 
 
 	void Awake(){
+		
+		ObjectPool.InitPool(projectile);
+		_projectileID = projectile.GetInstanceID();
+
 		_shipCollider2D = transform.parent.GetComponent<Collider2D>();
+
 	}
-
-
-	void Start(){
-	}
-
-
 
 
 	void Fire(){
@@ -31,7 +31,8 @@ public class Weapon : MonoBehaviour {
 		_current = (_current >= emitters.Length - 1) ? 0 : _current + 1; 
 
 		Vector3 position = emitters[_current].TransformPoint(Vector3.up * 0.5f);
-		GameObject projetileInstance = (GameObject)Instantiate(projectile, emitters[_current].position, emitters[_current].rotation);
+	//	GameObject projetileInstance = (GameObject)Instantiate(projectile, emitters[_current].position, emitters[_current].rotation);
+		GameObject projetileInstance = ObjectPool.GetInstance(_projectileID, emitters[_current].position, emitters[_current].rotation);
 
 		projetileInstance.GetComponent<Projectile>().range = firingRange;
 		Physics2D.IgnoreCollision(_shipCollider2D, projetileInstance.GetComponent<Collider2D>());

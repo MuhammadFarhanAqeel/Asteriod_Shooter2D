@@ -106,7 +106,6 @@ static public class GameManager
 
 				if (_lives <= 0)
 				{
-				//TODO : Handle GameOver
 					State = STATE.Over;
 				}
 			}

@@ -8,6 +8,7 @@ public class Spawner : MonoBehaviour {
 
 	[Header("SPAWN")]
 	public GameObject refrence;
+	int _refrenceID;
 
 
 	[Header("SPAWNING")]
@@ -41,6 +42,10 @@ public class Spawner : MonoBehaviour {
 	int _spawningHashID;
 
 	void Awake(){
+		ObjectPool.InitPool(refrence);
+		_refrenceID = refrence.GetInstanceID();
+
+
 		_animator = GetComponent<Animator>();
 		if (_animator)
 			_spawningHashID = Animator.StringToHash(animatorSpawningParameterName);
@@ -77,9 +82,9 @@ public class Spawner : MonoBehaviour {
 				Debug.DrawLine(debugPos, _position);
 			}
 
+		//	GameObject obj = (GameObject)Instantiate(refrence, _position, transform.rotation);
+			GameObject obj = ObjectPool.GetInstance(_refrenceID, _position, transform.rotation);
 
-			// TODO : objet pooling! 
-			GameObject obj = (GameObject)Instantiate(refrence, _position, transform.rotation);
 			Rigidbody2D rb2d = obj.GetComponent<Rigidbody2D>();
 			if (rb2d)
 			{

@@ -49,8 +49,7 @@ public class Item : MonoBehaviour {
 
 		yield return new WaitForSeconds(_audioSrc.clip.length);
 
-		//TODO : Object Pooling
-		Destroy(gameObject);
-
+		//Destroy(gameObject);
+		ObjectPool.Release(gameObject);
 	}
 }
