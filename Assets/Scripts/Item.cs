@@ -5,9 +5,10 @@ using UnityEngine;
 public class Item : MonoBehaviour {
 
 
-	public enum TYPE{ RepairtKit,ExtraLife }
+	public enum TYPE{ RepairtKit,ExtraLife,Weapon }
 	public TYPE type;
 	AudioSource _audioSrc;
+	public Weapon weapon; 
 
 	Renderer _renderer;
 	Collider2D _collider2D;
@@ -34,7 +35,10 @@ public class Item : MonoBehaviour {
 			case TYPE.RepairtKit:
 				GameManager.Damage = 0;
 				break;
-
+			case TYPE.Weapon:
+				other.GetComponent<ShipControllerBase>().SwitchWeapon(weapon);
+				break;
+				 
 			default:
 				
 				break;

@@ -1,15 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Collections.Generic;
 
 
 public class Spawner : MonoBehaviour {
 
 	[Header("SPAWN")]
-	public GameObject refrence;
-	int _refrenceID;
-
+	public List<GameObject> refrences;
+	private List<int> _refrencesIDs;
+	public bool random;
 
 	[Header("SPAWNING")]
 	[Range(0.001f,100)]	public float minRate = 1.0f;
@@ -41,10 +41,44 @@ public class Spawner : MonoBehaviour {
 	Animator _animator;
 	int _spawningHashID;
 
-	void Awake(){
-		ObjectPool.InitPool(refrence);
-		_refrenceID = refrence.GetInstanceID();
 
+	int _index;
+
+	public int Index
+	{
+		get
+		{ 
+			_index = _index < refrences.Count - 1 ? _index + 1 : 0;
+			return _index; 
+		}
+	}
+
+
+	private int RandomInt{
+		get{ 
+			return Random.Range(0,refrences.Count);
+		}
+	}
+
+	int Next
+	{
+		get
+		{ 
+			return random ? RandomInt : Index;
+		}
+	}
+
+
+
+	void Awake(){
+
+		_refrencesIDs = new List<int>();
+
+		foreach (GameObject g in refrences)
+		{
+			ObjectPool.InitPool(g);
+			_refrencesIDs.Add(g.GetInstanceID());
+		}
 
 		_animator = GetComponent<Animator>();
 		if (_animator)
@@ -83,7 +117,7 @@ public class Spawner : MonoBehaviour {
 			}
 
 		//	GameObject obj = (GameObject)Instantiate(refrence, _position, transform.rotation);
-			GameObject obj = ObjectPool.GetInstance(_refrenceID, _position, transform.rotation);
+			GameObject obj = ObjectPool.GetInstance(_refrencesIDs[Next], _position, transform.rotation);
 
 			Rigidbody2D rb2d = obj.GetComponent<Rigidbody2D>();
 			if (rb2d)
