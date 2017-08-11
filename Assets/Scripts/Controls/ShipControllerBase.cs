@@ -163,11 +163,10 @@ public abstract class ShipControllerBase : MonoBehaviour,IControllable {
 		Thrust = Vector2.zero;
 		Firing = Shield = false;
 
-		transform.rotation = Quaternion.identity;
-		transform.position = Vector3.zero;
+		SwitchWeapon(_weapons[0]);
 
-		gameObject.SendMessage("Repair");
-		Weapon = _weapons[0];  
+		//Weapon = _weapons[0];  
+
 
 	}
 

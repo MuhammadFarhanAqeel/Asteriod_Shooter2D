@@ -1,9 +1,8 @@
-﻿using System.Collections;
+﻿/*
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
-
 
 /// <summary>
 /// Fit area to camera.
@@ -20,8 +19,8 @@ public class FitAreaToCamera : MonoBehaviour {
 
 
 	void FitToCamera(Camera cam){
-	//	Area.SetArea(new Vector2(cam.aspect * cam.orthographicSize*2,cam.orthographicSize * 2)); 
-		Area.Size = new Vector2(cam.aspect * cam.orthographicSize*2,cam.orthographicSize * 2); 
+//		Area.Size = new Vector2(cam.aspect * cam.orthographicSize*2,cam.orthographicSize * 2); 
+		Area.rectTransform.sizeDelta = new Vector2(cam.aspect * cam.orthographicSize * 2, cam.orthographicSize * 2); 
 
 		transform.position = (Vector2)cam.transform.position;
 		transform.rotation = cam.transform.rotation;
@@ -41,3 +40,4 @@ public class FitAreaToCamera : MonoBehaviour {
 		FitToMainCamera();
 	}
 }
+*/

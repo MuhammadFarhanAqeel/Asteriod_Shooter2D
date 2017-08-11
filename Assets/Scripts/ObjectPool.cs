@@ -51,6 +51,20 @@ public class ObjectPool : MonoBehaviour {
 		return freeObject;
 	}
 
+
+	public void Clear()
+	{
+		foreach (GameObject obj in _objectList)
+			obj.SetActive(false);
+
+
+	}
+
+
+	public static void ClearPool(int orignalID){
+		pools[orignalID].Clear();
+	}
+
 	public static void InitPool(GameObject orignal,int poolSize = 200){
 		if (!pools.ContainsKey(orignal.GetInstanceID()))
 		{

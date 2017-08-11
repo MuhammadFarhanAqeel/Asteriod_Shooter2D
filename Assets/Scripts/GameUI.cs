@@ -45,7 +45,7 @@ public class GameUI : MonoBehaviour {
 	}
 
 	void Start(){
-		GameManager.Lives = 1;
+
 		damageSlider.value = GameManager.Damage;
 		UpdateUI(GameManager.State);
 

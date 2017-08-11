@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-
+using System.Linq;
 
 static public class GameManager 
 {
@@ -35,12 +34,15 @@ static public class GameManager
 			{
 				case STATE.Running:
 					Time.timeScale = 1;
+					Controls = true;
 					break;
 				case STATE.Paused:
 					Time.timeScale = 0;
+					Controls = false;
 					break;
 				case STATE.Over:
 					Time.timeScale = 0;
+					Controls = false;
 					break;
 				default:
 					break;
@@ -53,6 +55,23 @@ static public class GameManager
 
 
 
+	static ControlsBase[] _controls = new ControlsBase[0];
+	public static bool Controls
+	{
+		set
+		{
+			if (_controls.Length == 0)
+			{
+				_controls = (from item in GameObject.FindObjectsOfType<ControlsBase>()
+				             where item.enabled = true
+				             select item).ToArray();
+			}	
+			foreach (ControlsBase control in _controls)
+			{
+				control.enabled = value;
+			}
+		}
+	}
 
 
 	public const float maxDamage = 100;
@@ -99,6 +118,11 @@ static public class GameManager
 		{ 
 			if (_lives != value)
 			{
+
+				if (value < _lives)
+					Component.FindObjectOfType<ShipDamage>().Die();
+
+
 				_lives = value;
 
 				if (LivesChanged != null)
@@ -115,7 +139,7 @@ static public class GameManager
 
 
 	public static event DamageChange DamageChanged;
-	static float _damage;		
+	static float _damage = 90f;		
 	static	public float Damage
 	{
 		get
@@ -140,15 +164,29 @@ static public class GameManager
 
 
 	public static void RestartGame(){
+
+		ObjectPool[] pools = GameObject.FindObjectsOfType<ObjectPool>();
+		foreach (ObjectPool pool in pools)
+			pool.Clear();
+
+		Spawner[] spawmers = GameObject.FindObjectsOfType<Spawner>();
+		foreach (Spawner spawner in spawmers)
+			spawner.Restart();
+
+
+		GameObject.FindObjectOfType<ShipControllerBase>().ResetShip();
+
+
+		SaveTransforms[] saveTransforms = GameObject.FindObjectsOfType<SaveTransforms>();
+		foreach (SaveTransforms s in saveTransforms)
+			s.Reload();
+
 		Lives = 5;
 		Damage = 0;
 		Score = 0;
-		DamageChanged = null;
-		LivesChanged = null;
-		ScoreChanged = null;
-		HighScoreChanged = null;
-		StateChanged = null;
-		SceneManager.LoadScene(0);	
+
+
+
 		State = STATE.Running;
 	}
 

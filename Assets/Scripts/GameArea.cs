@@ -12,12 +12,24 @@ using UnityEngine;
 
 
 [AddComponentMenu("Farhan/GameArea")]
+[RequireComponent(typeof(RectTransform))]
 public class GameArea : MonoBehaviour {
 
 	[SerializeField]
 	[HideInInspector]
 	Rect _area;
 
+
+	RectTransform _rectTransform;
+	public RectTransform rectTransform
+	{
+		get
+		{ 
+			if (!_rectTransform)
+				_rectTransform = GetComponent<RectTransform>();
+			return _rectTransform;
+		}
+	}
 
 
 	static GameArea _main;
@@ -26,12 +38,22 @@ public class GameArea : MonoBehaviour {
 		get{ 
 			if (_main == null)
 			{
-				_main = GameObject.FindObjectOfType<GameArea>();
+				List<GameArea> areas = new List<GameArea>(FindObjectsOfType<GameArea>());
+				if (areas.Count > 0)
+				{
+					areas.Sort((f1, f2) => f2.Area.size.magnitude.CompareTo(f1.Area.size.magnitude));
+					_main = areas[0];
+				}
+
 				if (_main == null)
 				{
 					GameObject go = new GameObject("Game Area: Main");
 					_main = go.AddComponent<GameArea>();
-					go.AddComponent<FitAreaToCamera>();
+					Canvas canvas = go.AddComponent<Canvas>();
+					canvas.renderMode = RenderMode.ScreenSpaceCamera;
+					canvas.planeDistance = Camera.main.transform.position.z;
+					canvas.worldCamera = Camera.main;
+				
 				}
 			}
 			return _main;
@@ -41,15 +63,19 @@ public class GameArea : MonoBehaviour {
 		}
 	}
 
-	public Rect Area{
-		get{ return _area;}
-		set{ _area = value;}
+	public Rect Area
+	{
+		get{ return rectTransform.rect; }
+		set
+		{
+			rectTransform.sizeDelta = new Vector2(value.width, value.height);
+		}
 	}
 
 	public	Color gizmoColor = new Color(0, 0, 1, .2f);
 	Color gizmoWireColor;
 
-
+	/*
 	public Vector2 size;
 	public Vector2 Size{
 		get{ 
@@ -61,20 +87,20 @@ public class GameArea : MonoBehaviour {
 		}
 	}
 
-
+*/
 
 	void OnDrawGizmos(){
 		Gizmos.matrix = transform.localToWorldMatrix;
 
 		Gizmos.color = gizmoColor;
-		Gizmos.DrawCube(Vector2.zero, new Vector3(Area.width, Area.height, 0));
+		Gizmos.DrawCube(Area.center, new Vector3(Area.width, Area.height, 0));
 		Gizmos.color = gizmoWireColor;
-		Gizmos.DrawWireCube(Vector2.zero, new Vector3(Area.width, Area.height, 0));
+		Gizmos.DrawWireCube(Area.center, new Vector3(Area.width, Area.height, 0));
 
 	}
 
 	void OnValidate(){
-		Size = size;
+	//	Size = size;
 		gizmoWireColor = new Color(gizmoColor.r, gizmoColor.g, gizmoColor.b, 1.0f);
 	}
 

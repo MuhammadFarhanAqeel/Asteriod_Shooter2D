@@ -73,7 +73,6 @@ public class Spawner : MonoBehaviour {
 	void Awake(){
 
 		_refrencesIDs = new List<int>();
-
 		foreach (GameObject g in refrences)
 		{
 			ObjectPool.InitPool(g);
@@ -84,6 +83,16 @@ public class Spawner : MonoBehaviour {
 		if (_animator)
 			_spawningHashID = Animator.StringToHash(animatorSpawningParameterName);
 	}
+
+
+	public void Restart(){
+	
+		StopCoroutine(Start());
+
+		StartCoroutine(Start());
+
+	}
+
 
 
 	IEnumerator Start(){
